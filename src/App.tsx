@@ -1,5 +1,6 @@
 import React from 'react';
 import { Redirect, Route } from 'react-router-dom';
+import { Authenticator } from '@aws-amplify/ui-react';
 import {
   IonApp,
   IonIcon,
@@ -11,10 +12,9 @@ import {
   setupIonicReact
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { ellipse, square, triangle } from 'ionicons/icons';
-import Tab1 from './pages/Tab1';
-import Tab2 from './pages/Tab2';
-import Tab3 from './pages/Tab3';
+import { homeOutline, layersOutline, cloudUploadOutline, cubeOutline, briefcaseOutline } from 'ionicons/icons';
+import Home from './pages/Home';
+
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -34,44 +34,74 @@ import '@ionic/react/css/display.css';
 
 /* Theme variables */
 import './theme/variables.css';
+import Stock from './pages/Stock';
+import JobTemplate from './pages/JobTemplate';
+import LoginPage from './pages/LoginPage';
+import JobTemplateUpload from './pages/JobTemplateUpload';
+import JobHistory from './pages/JobHistory';
+
+import { ProtectedRoute } from './ProtectedRoute';
 
 setupIonicReact();
 
 const App: React.FC = () => (
-  <IonApp>
-    <IonReactRouter>
-      <IonTabs>
-        <IonRouterOutlet>
-          <Route exact path="/tab1">
-            <Tab1 />
-          </Route>
-          <Route exact path="/tab2">
-            <Tab2 />
-          </Route>
-          <Route path="/tab3">
-            <Tab3 />
-          </Route>
-          <Route exact path="/">
-            <Redirect to="/tab1" />
-          </Route>
-        </IonRouterOutlet>
-        <IonTabBar slot="bottom">
-          <IonTabButton tab="tab1" href="/tab1">
-            <IonIcon aria-hidden="true" icon={triangle} />
-            <IonLabel>Tab 1</IonLabel>
-          </IonTabButton>
-          <IonTabButton tab="tab2" href="/tab2">
-            <IonIcon aria-hidden="true" icon={ellipse} />
-            <IonLabel>Tab 2</IonLabel>
-          </IonTabButton>
-          <IonTabButton tab="tab3" href="/tab3">
-            <IonIcon aria-hidden="true" icon={square} />
-            <IonLabel>Tab 3</IonLabel>
-          </IonTabButton>
-        </IonTabBar>
-      </IonTabs>
-    </IonReactRouter>
-  </IonApp>
+  <Authenticator>
+
+    <IonApp>
+      <IonReactRouter>
+        <IonTabs>
+          <IonRouterOutlet>
+            <Route exact path="/login" >
+              <LoginPage />
+            </Route>
+            <Route exact path="/">
+              <LoginPage />
+            </Route>
+
+            <ProtectedRoute path="/home" exact >
+              <Home />
+            </ProtectedRoute>
+            <ProtectedRoute path="/job-template" exact >
+              <JobTemplate />
+            </ProtectedRoute>
+            <ProtectedRoute path="/upload-template" exact >
+              <JobTemplateUpload />
+            </ProtectedRoute>
+            <ProtectedRoute path="/stock" exact >
+              <Stock />
+            </ProtectedRoute>
+            <ProtectedRoute path="/job-history" exact >
+              <JobHistory />
+            </ProtectedRoute>
+          </IonRouterOutlet>
+
+          <IonTabBar slot="bottom">
+            <IonTabButton tab="home" href="/home">
+              <IonIcon aria-hidden="true" icon={homeOutline} />
+              <IonLabel>Inventory</IonLabel>
+            </IonTabButton>
+            <IonTabButton tab="job-template" href="/job-template">
+              <IonIcon aria-hidden="true" icon={layersOutline} />
+              <IonLabel>JobTemplate</IonLabel>
+            </IonTabButton>
+            <IonTabButton tab="upload-template" href="/upload-template">
+              <IonIcon aria-hidden="true" icon={cloudUploadOutline} />
+              <IonLabel>JobTemplateUpload</IonLabel>
+            </IonTabButton>
+            <IonTabButton tab="stock" href="/stock">
+              <IonIcon aria-hidden="true" icon={cubeOutline} />
+              <IonLabel>Stock/Consume</IonLabel>
+            </IonTabButton>
+            <IonTabButton tab="job-history" href="/job-history">
+              <IonIcon aria-hidden="true" icon={briefcaseOutline} />
+              <IonLabel>Job History</IonLabel>
+            </IonTabButton>
+          </IonTabBar>
+        </IonTabs>
+      </IonReactRouter>
+    </IonApp>
+
+  </Authenticator>
 );
 
 export default App;

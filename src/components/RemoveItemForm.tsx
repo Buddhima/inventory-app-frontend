@@ -1,0 +1,96 @@
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
+import {
+    IonItem,
+    IonLabel,
+    IonInput,
+    IonButton,
+    IonToast
+} from '@ionic/react';
+import axios from 'axios';
+import { api } from '../api';
+
+interface RemoveItemFormProps {
+    onItemAdded?: () => void;
+}
+
+const RemoveItemForm = ({ onItemAdded }: RemoveItemFormProps) => {
+    const [sku_id, setSkuId] = useState('');
+    const [name, setName] = useState('');
+    const [quantity, setQuantity] = useState('');
+    const [showToast, setShowToast] = useState(false);
+
+    const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        try {
+            await api.post('/consume', {
+                id: sku_id.trim(),
+                name: name.trim(),
+                quantity: parseInt(quantity, 0)
+            });
+
+            setSkuId('');
+            setName('');
+            setQuantity('');
+            setShowToast(true);
+            onItemAdded?.();
+        } catch (error) {
+            console.error('Error adding item:', error);
+        }
+    };
+
+    return (
+        <>
+            <form onSubmit={submitHandler}>
+                <IonItem>
+                    <IonInput
+                        label='Item Code'
+                        labelPlacement='floating'
+                        value={sku_id}
+                        onIonChange={(e) => setSkuId(e.detail.value ?? '')}
+                        required
+                    />
+                </IonItem>
+
+                <IonItem>
+                    <IonInput
+                        label='Item Name'
+                        labelPlacement='floating'
+                        value={name}
+                        onIonChange={(e) => setName(e.detail.value ?? '')}
+                        required
+                    />
+                </IonItem>
+
+                <IonItem>
+                    <IonInput
+                        label='Quantity'
+                        labelPlacement='floating'
+                        type="number"
+                        value={quantity}
+                        onIonChange={(e) => setQuantity(e.detail.value ?? '')}
+                        required
+                    />
+                </IonItem>
+
+                <IonButton expand="block" type="submit" className="ion-margin-top" color="danger">
+                    Consume Item
+                </IonButton>
+            </form>
+
+            <IonToast
+                isOpen={showToast}
+                message="Item consumed successfully!"
+                duration={2000}
+                onDidDismiss={() => setShowToast(false)}
+            />
+        </>
+    );
+};
+
+RemoveItemForm.propTypes = {
+    onItemAdded: PropTypes.func
+};
+
+export default RemoveItemForm;
