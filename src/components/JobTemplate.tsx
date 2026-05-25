@@ -406,7 +406,6 @@ const JobTemplate: React.FC = () => {
                                                 labelPlacement="floating"
                                                 type="number"
                                                 min={0}
-                                                max={item.stockQty}
                                                 value={item.componentQuantity || 0}
                                                 onIonChange={(e) =>
                                                     handleItemChange(
@@ -422,7 +421,14 @@ const JobTemplate: React.FC = () => {
 
                                     <IonCol size="2" className="ion-text-center">
 
-                                        <IonBadge color="primary">Max: {item.stockQty}</IonBadge>
+                                        <IonBadge 
+                                            color={
+                                                Number(item.componentQuantity) > Number(item.stockQty ?? 0)
+                                                    ? "danger"
+                                                    : "primary"
+                                            }>
+                                                Stocks: {item.stockQty}
+                                        </IonBadge>
 
                                         <IonButton
                                             color="danger"

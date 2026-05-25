@@ -9,6 +9,6 @@ ionic build
 
 # 2. Sync the build folder to S3
 echo "Uploading to S3..."
-aws s3 sync build/ s3://<s3_bucket> --delete
+aws s3 sync build/ s3://buddhima-inventory-app-web --delete
 
 echo "Deployment complete!"

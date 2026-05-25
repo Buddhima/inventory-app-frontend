@@ -53,7 +53,7 @@ const ItemList = ({ reload }) => {
       <IonList>
         {filteredItems.map((item) => {
           const stockColor =
-            item.quantity === 0
+            item.quantity <= 0
               ? 'danger'
               : item.quantity < minStockQty
                 ? 'warning'

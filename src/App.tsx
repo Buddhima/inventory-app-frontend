@@ -12,7 +12,7 @@ import {
   setupIonicReact
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { homeOutline, layersOutline, cloudUploadOutline, cubeOutline, briefcaseOutline } from 'ionicons/icons';
+import { homeOutline, layersOutline, cloudUploadOutline, cubeOutline, briefcaseOutline, boatOutline } from 'ionicons/icons';
 import Home from './pages/Home';
 
 
@@ -39,6 +39,7 @@ import JobTemplate from './pages/JobTemplate';
 import LoginPage from './pages/LoginPage';
 import JobTemplateUpload from './pages/JobTemplateUpload';
 import JobHistory from './pages/JobHistory';
+import Dispatch from './pages/Dispatch';
 
 import { ProtectedRoute } from './ProtectedRoute';
 
@@ -73,6 +74,9 @@ const App: React.FC = () => (
             <ProtectedRoute path="/job-history" exact >
               <JobHistory />
             </ProtectedRoute>
+            <ProtectedRoute path="/dispatch" exact >
+              <Dispatch />
+            </ProtectedRoute>
           </IonRouterOutlet>
 
           <IonTabBar slot="bottom">
@@ -95,6 +99,10 @@ const App: React.FC = () => (
             <IonTabButton tab="job-history" href="/job-history">
               <IonIcon aria-hidden="true" icon={briefcaseOutline} />
               <IonLabel>Job History</IonLabel>
+            </IonTabButton>
+            <IonTabButton tab="dispatch" href="/dispatch">
+              <IonIcon aria-hidden="true" icon={boatOutline} />
+              <IonLabel>Dispatch</IonLabel>
             </IonTabButton>
           </IonTabBar>
         </IonTabs>
