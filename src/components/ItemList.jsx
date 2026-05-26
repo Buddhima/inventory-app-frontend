@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { IonSpinner, IonGrid, IonRow, IonCol, IonList, IonItem, IonBadge, IonLabel, IonSearchbar } from '@ionic/react';
+import { useHistory } from 'react-router-dom';
+import { IonSpinner, IonList, IonItem, IonLabel, IonSearchbar } from '@ionic/react';
 import { api } from '../api';
 import './ItemList.css'
 
@@ -8,6 +9,7 @@ const minStockQty = 100;
 
 const ItemList = ({ reload }) => {
 
+  const history = useHistory();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchText, setSearchText] = useState('');
@@ -17,16 +19,21 @@ const ItemList = ({ reload }) => {
     try {
       const res = await api.get('/inventory');
       setItems(res.data);
-    } catch (err) {
-      console.error(err);
+    } catch {
+      setItems([]);
     }
     setLoading(false);
+  };
+
+  const openMovements = (item) => {
+    history.push(`/inventory/${encodeURIComponent(item.id)}/movements`, {
+      itemName: item.name,
+    });
   };
 
   const filteredItems = useMemo(() => {
     if (!searchText) return items;
 
-    console.log('Filtering items with search text:', searchText);
     const query = searchText.toLowerCase();
 
     return items.filter(item =>
@@ -58,9 +65,8 @@ const ItemList = ({ reload }) => {
               : item.quantity < minStockQty
                 ? 'warning'
                 : 'success';
-
           return (
-            <IonItem key={item.id} button>
+            <IonItem key={item.id} button onClick={() => openMovements(item)}>
               <IonLabel>
                 <h2>{item.name}</h2>
                 <p>Component ID: {item.id}</p>

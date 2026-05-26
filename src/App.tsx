@@ -40,6 +40,7 @@ import LoginPage from './pages/LoginPage';
 import JobTemplateUpload from './pages/JobTemplateUpload';
 import JobHistory from './pages/JobHistory';
 import Dispatch from './pages/Dispatch';
+import InventoryMovements from './pages/InventoryMovements';
 
 import { ProtectedRoute } from './ProtectedRoute';
 
@@ -61,6 +62,9 @@ const App: React.FC = () => (
 
             <ProtectedRoute path="/home" exact >
               <Home />
+            </ProtectedRoute>
+            <ProtectedRoute path="/inventory/:id/movements" exact >
+              <InventoryMovements />
             </ProtectedRoute>
             <ProtectedRoute path="/job-template" exact >
               <JobTemplate />
