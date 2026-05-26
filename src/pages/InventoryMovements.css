@@ -1,0 +1,81 @@
+.movements-back-button {
+  margin: 0 0 8px -8px;
+}
+
+.movements-heading {
+  margin-bottom: 16px;
+}
+
+.movements-heading h2,
+.movements-heading p,
+.movement-row h3,
+.movement-row p {
+  margin: 0;
+}
+
+.movements-heading h2 {
+  font-size: 1.35rem;
+  font-weight: 700;
+}
+
+.movements-heading p,
+.movement-row p {
+  color: var(--ion-color-medium);
+}
+
+.movements-state {
+  display: flex;
+  justify-content: center;
+  margin: 24px 0 0;
+  color: var(--ion-color-medium);
+}
+
+.movements-state.error {
+  justify-content: flex-start;
+  color: var(--ion-color-danger);
+}
+
+.movements-list {
+  background: transparent;
+}
+
+.movement-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+}
+
+.movement-row h3 {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.movement-summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: right;
+}
+
+.movement-added {
+  color: var(--ion-color-success);
+}
+
+.movement-consumed {
+  color: var(--ion-color-warning-shade, #b26a00);
+}
+
+@media (max-width: 480px) {
+  .movement-row {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .movement-summary {
+    justify-content: space-between;
+    width: 100%;
+  }
+}
