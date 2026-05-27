@@ -1,4 +1,4 @@
-import React, { useState, useEffect, FormEvent, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
     IonButton,
     IonItem,
@@ -13,6 +13,10 @@ import {
     IonButtons,
     IonContent,
     IonSearchbar,
+    IonInput,
+    IonGrid,
+    IonRow,
+    IonCol,
 } from "@ionic/react";
 import { api } from '../api';
 
@@ -40,14 +44,25 @@ export interface FileGenerationResponse {
     fileUrl: string;
 }
 
+interface DispatchLine {
+    batchNumber: string;
+    quantity: number;
+}
+
 const JobDispatch: React.FC = () => {
     const [jobs, setJobs] = useState<JobSummary[]>([]);
     const [selectedId, setSelectedId] = useState<string>();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
-    const [id, setId] = useState<string>("");
-    const [showToast, setShowToast] = useState(false);
+    const [purchasingDoc, setPurchasingDoc] = useState<string>("");
+    const [poItem, setPoItem] = useState<string>("");
+    const [supplier, setSupplier] = useState<string>("");
+    const [deliveryQtyUnit, setDeliveryQtyUnit] = useState<string>("");
+    const [deliveryDate, setDeliveryDate] = useState<string>("");
+    const [shippingDate, setShippingDate] = useState<string>("");
+    const [numberOfLines, setNumberOfLines] = useState<number>(0);
+    const [dispatchLines, setDispatchLines] = useState<DispatchLine[]>([]);
     const [asnLink, setAsnLink] = useState<string>("");
     const [asnFileName, setAsnFileName] = useState<string>("");
 
@@ -68,16 +83,84 @@ const JobDispatch: React.FC = () => {
         }
     };
 
+    const buildDispatchLines = () => {
+        if (numberOfLines < 1) {
+            setError('Please enter the number of lines');
+            return;
+        }
+
+        setDispatchLines((prev) =>
+            Array.from({ length: numberOfLines }, (_, index) => ({
+                batchNumber: prev[index]?.batchNumber ?? "",
+                quantity: prev[index]?.quantity ?? 0,
+            }))
+        );
+    };
+
+    const updateDispatchLine = (
+        index: number,
+        field: keyof DispatchLine,
+        value: string | number
+    ) => {
+        setDispatchLines((prev) => {
+            const updated = [...prev];
+            updated[index] = {
+                ...updated[index],
+                [field]: value,
+            };
+            return updated;
+        });
+    };
+
     const generateASN = async () => {
-        if (!selectedId) return;
+        if (!selectedJob) {
+            setError('Please select a job');
+            return;
+        }
+
+        if (
+            !purchasingDoc.trim() ||
+            !poItem.trim() ||
+            !supplier.trim() ||
+            !deliveryQtyUnit.trim() ||
+            !deliveryDate ||
+            !shippingDate ||
+            numberOfLines < 1
+        ) {
+            setError('Please fill all ASN details');
+            return;
+        }
+
+        if (dispatchLines.length !== numberOfLines) {
+            setError('Please generate dispatch lines before submitting');
+            return;
+        }
+
+        const hasInvalidLine = dispatchLines.some(
+            (line) => !line.batchNumber.trim() || Number(line.quantity) <= 0
+        );
+
+        if (hasInvalidLine) {
+            setError('Please enter batch number and quantity for each line');
+            return;
+        }
 
         try {
             setLoading(true);
 
-            const sk = encodeURIComponent(selectedId);
-
             const res = await api.post('/generate-asn', {
-                params: { sk }
+                jobNumber: selectedJob.jobNumber,
+                purchasingDoc,
+                poItem,
+                supplier,
+                deliveryQtyUnit,
+                deliveryDate,
+                shippingDate,
+                numberOfLines,
+                lines: dispatchLines.map((line) => ({
+                    batchNumber: line.batchNumber,
+                    quantity: Number(line.quantity),
+                })),
             });
 
             const data = res.data as FileGenerationResponse; // adjust according to file generation response
@@ -150,6 +233,8 @@ const JobDispatch: React.FC = () => {
                                 button
                                 onClick={() => {
                                     setSelectedId(t.sk);
+                                    setAsnLink("");
+                                    setAsnFileName("");
                                     setShowModal(false);
                                 }}
                             >
@@ -163,9 +248,141 @@ const JobDispatch: React.FC = () => {
                 </IonContent>
             </IonModal>
 
+            {selectedJob && (
+                <>
+                    <IonList className="ion-margin-top">
+                        <IonItem>
+                            <IonLabel position="floating">Purchasing doc</IonLabel>
+                            <IonInput
+                                value={purchasingDoc}
+                                onIonChange={(e) => setPurchasingDoc(e.detail.value ?? "")}
+                                required
+                            />
+                        </IonItem>
+
+                        <IonItem>
+                            <IonLabel position="floating">PO item</IonLabel>
+                            <IonInput
+                                value={poItem}
+                                onIonChange={(e) => setPoItem(e.detail.value ?? "")}
+                                required
+                            />
+                        </IonItem>
+
+                        <IonItem>
+                            <IonLabel position="floating">Supplier</IonLabel>
+                            <IonInput
+                                value={supplier}
+                                onIonChange={(e) => setSupplier(e.detail.value ?? "")}
+                                required
+                            />
+                        </IonItem>
+
+                        <IonItem>
+                            <IonLabel position="floating">Delivery qty unit</IonLabel>
+                            <IonInput
+                                value={deliveryQtyUnit}
+                                onIonChange={(e) => setDeliveryQtyUnit(e.detail.value ?? "")}
+                                required
+                            />
+                        </IonItem>
+
+                        <IonItem>
+                            <IonLabel position="floating">Delivery date</IonLabel>
+                            <IonInput
+                                type="date"
+                                value={deliveryDate}
+                                onIonChange={(e) => setDeliveryDate(e.detail.value ?? "")}
+                                required
+                            />
+                        </IonItem>
+
+                        <IonItem>
+                            <IonLabel position="floating">Shipping date</IonLabel>
+                            <IonInput
+                                type="date"
+                                value={shippingDate}
+                                onIonChange={(e) => setShippingDate(e.detail.value ?? "")}
+                                required
+                            />
+                        </IonItem>
+
+                        <IonItem>
+                            <IonLabel position="floating">No of lines</IonLabel>
+                            <IonInput
+                                type="number"
+                                min={1}
+                                value={numberOfLines || ""}
+                                onIonChange={(e) => {
+                                    const value = Number(e.detail.value ?? 0);
+                                    setNumberOfLines(value);
+                                }}
+                                required
+                            />
+                        </IonItem>
+                    </IonList>
+
+                    <IonButton
+                        expand="block"
+                        className="ion-margin-top"
+                        disabled={numberOfLines < 1}
+                        onClick={buildDispatchLines}
+                    >
+                        Show Lines
+                    </IonButton>
+
+                    {dispatchLines.length > 0 && (
+                        <IonList className="ion-margin-top">
+                            <IonLabel>
+                                <strong>Dispatch Lines</strong>
+                            </IonLabel>
+
+                            {dispatchLines.map((line, index) => (
+                                <IonGrid key={index}>
+                                    <IonRow className="ion-align-items-center">
+                                        <IonCol size="12" sizeMd="2">
+                                            <IonLabel>Line {index + 1}</IonLabel>
+                                        </IonCol>
+
+                                        <IonCol size="12" sizeMd="5">
+                                            <IonItem>
+                                                <IonLabel position="floating">Batch number</IonLabel>
+                                                <IonInput
+                                                    value={line.batchNumber}
+                                                    onIonChange={(e) =>
+                                                        updateDispatchLine(index, "batchNumber", e.detail.value ?? "")
+                                                    }
+                                                    required
+                                                />
+                                            </IonItem>
+                                        </IonCol>
+
+                                        <IonCol size="12" sizeMd="5">
+                                            <IonItem>
+                                                <IonLabel position="floating">Quantity</IonLabel>
+                                                <IonInput
+                                                    type="number"
+                                                    min={0}
+                                                    value={line.quantity || ""}
+                                                    onIonChange={(e) =>
+                                                        updateDispatchLine(index, "quantity", Number(e.detail.value ?? 0))
+                                                    }
+                                                    required
+                                                />
+                                            </IonItem>
+                                        </IonCol>
+                                    </IonRow>
+                                </IonGrid>
+                            ))}
+                        </IonList>
+                    )}
+                </>
+            )}
+
             <IonButton
                 expand="block"
-                disabled={!selectedId}
+                className="ion-margin-top"
+                disabled={!selectedId || loading}
                 onClick={generateASN}
             >
                 Generate ASN
@@ -179,8 +396,8 @@ const JobDispatch: React.FC = () => {
                 onDidDismiss={() => setError('')}
             />
 
-            <IonLabel hidden={id.length > 0} color="danger">
-                <strong>Please select a job and click &quot;Generate ASN&quot; to download ASN file.</strong>
+            <IonLabel hidden={!!selectedJob} color="danger">
+                <strong>Please select a job, enter ASN details, and click &quot;Generate ASN&quot; to download ASN file.</strong>
             </IonLabel>
 
             {asnLink && (
