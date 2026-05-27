@@ -62,7 +62,6 @@ const JobDispatch: React.FC = () => {
     const [plant, setPlant] = useState<string>("FLKA");
     const [poItem, setPoItem] = useState<string>("10");
     const [supplier, setSupplier] = useState<string>("10058487");
-    const [deliveryQtyUnit, setDeliveryQtyUnit] = useState<string>("PC");
     const [deliveryNote, setDeliveryNote] = useState<string>("production");
     const [deliveryDate, setDeliveryDate] = useState<string>("");
     const [shippingDate, setShippingDate] = useState<string>("");
@@ -133,7 +132,6 @@ const JobDispatch: React.FC = () => {
             !plant.trim() ||
             !poItem.trim() ||
             !supplier.trim() ||
-            !deliveryQtyUnit.trim() ||
             !deliveryNote.trim() ||
             !deliveryDate ||
             !shippingDate ||
@@ -174,7 +172,6 @@ const JobDispatch: React.FC = () => {
                 plant,
                 poItem,
                 supplier,
-                deliveryQtyUnit,
                 deliveryNote,
                 deliveryDate,
                 shippingDate,
@@ -351,15 +348,6 @@ const JobDispatch: React.FC = () => {
                                     </IonItem>
 
                                     <IonItem>
-                                        <IonLabel position="floating">Delivery qty unit</IonLabel>
-                                        <IonInput
-                                            value={deliveryQtyUnit}
-                                            onIonChange={(e) => setDeliveryQtyUnit(e.detail.value ?? "")}
-                                            required
-                                        />
-                                    </IonItem>
-
-                                    <IonItem>
                                         <IonLabel position="floating">Delivery note</IonLabel>
                                         <IonInput
                                             value={deliveryNote}
@@ -387,7 +375,7 @@ const JobDispatch: React.FC = () => {
                                     </IonItem>
 
                                     <IonItem>
-                                        <IonLabel position="floating">Qty unit</IonLabel>
+                                        <IonLabel position="floating">Delivery qty unit / Qty unit</IonLabel>
                                         <IonInput
                                             value={qtyUnit}
                                             onIonChange={(e) => setQtyUnit(e.detail.value ?? "")}
