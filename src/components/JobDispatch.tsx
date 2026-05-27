@@ -286,6 +286,36 @@ const JobDispatch: React.FC = () => {
                             />
                         </IonItem>
 
+                        <IonItem>
+                            <IonLabel position="floating">Delivery date</IonLabel>
+                            <IonInput
+                                type="date"
+                                value={deliveryDate}
+                                onIonChange={(e) => setDeliveryDate(e.detail.value ?? "")}
+                                required
+                            />
+                        </IonItem>
+
+                        <IonItem>
+                            <IonLabel position="floating">Shipping date</IonLabel>
+                            <IonInput
+                                type="date"
+                                value={shippingDate}
+                                onIonChange={(e) => setShippingDate(e.detail.value ?? "")}
+                                required
+                            />
+                        </IonItem>
+
+                        <IonItem>
+                            <IonLabel position="floating">Manufacturing date</IonLabel>
+                            <IonInput
+                                type="date"
+                                value={manufacturingDate}
+                                onIonChange={(e) => setManufacturingDate(e.detail.value ?? "")}
+                                required
+                            />
+                        </IonItem>
+
                         <IonAccordionGroup className="ion-margin-top">
                             <IonAccordion value="asn-defaults">
                                 <IonItem slot="header">
@@ -376,36 +406,6 @@ const JobDispatch: React.FC = () => {
                                 </IonList>
                             </IonAccordion>
                         </IonAccordionGroup>
-
-                        <IonItem>
-                            <IonLabel position="floating">Delivery date</IonLabel>
-                            <IonInput
-                                type="date"
-                                value={deliveryDate}
-                                onIonChange={(e) => setDeliveryDate(e.detail.value ?? "")}
-                                required
-                            />
-                        </IonItem>
-
-                        <IonItem>
-                            <IonLabel position="floating">Shipping date</IonLabel>
-                            <IonInput
-                                type="date"
-                                value={shippingDate}
-                                onIonChange={(e) => setShippingDate(e.detail.value ?? "")}
-                                required
-                            />
-                        </IonItem>
-
-                        <IonItem>
-                            <IonLabel position="floating">Manufacturing date</IonLabel>
-                            <IonInput
-                                type="date"
-                                value={manufacturingDate}
-                                onIonChange={(e) => setManufacturingDate(e.detail.value ?? "")}
-                                required
-                            />
-                        </IonItem>
 
                         <IonItem>
                             <IonLabel position="floating">No of lines</IonLabel>
