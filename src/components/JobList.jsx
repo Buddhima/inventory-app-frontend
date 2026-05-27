@@ -65,6 +65,7 @@ const JobList = ({ reload }) => {
                   dateStyle: "medium",
                   timeStyle: "short",
                 }).format(new Date(item.createdAt))}</p>
+                {item.performedByName && <p>Performed By: {item.performedByName}</p>}
               </IonLabel>
 
               {/* Right: Link to actual job */}

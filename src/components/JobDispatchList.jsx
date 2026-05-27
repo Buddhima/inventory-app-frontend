@@ -90,6 +90,7 @@ const JobDispatchList = ({ reload }) => {
                   dateStyle: "medium",
                   timeStyle: "short",
                 }).format(new Date(item.createdAt))}</p>
+                {item.performedByName && <p>Performed By: {item.performedByName}</p>}
                 <p>File Name: {item.fileName}</p>
               </IonLabel>
 
