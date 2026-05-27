@@ -429,12 +429,14 @@ const JobDispatch: React.FC = () => {
 
                             {dispatchLines.map((line, index) => (
                                 <IonGrid key={index}>
-                                    <IonRow className="ion-align-items-center">
-                                        <IonCol size="12" sizeMd="2">
+                                    <IonRow>
+                                        <IonCol size="12">
                                             <IonLabel>Line {index + 1}</IonLabel>
                                         </IonCol>
+                                    </IonRow>
 
-                                        <IonCol size="12" sizeMd="5">
+                                    <IonRow>
+                                        <IonCol size="12" sizeMd="4">
                                             <IonItem>
                                                 <IonLabel position="floating">Batch number</IonLabel>
                                                 <IonInput
@@ -447,7 +449,7 @@ const JobDispatch: React.FC = () => {
                                             </IonItem>
                                         </IonCol>
 
-                                        <IonCol size="12" sizeMd="5">
+                                        <IonCol size="12" sizeMd="4">
                                             <IonItem>
                                                 <IonLabel position="floating">Quantity</IonLabel>
                                                 <IonInput
@@ -462,7 +464,7 @@ const JobDispatch: React.FC = () => {
                                             </IonItem>
                                         </IonCol>
 
-                                        <IonCol size="12" sizeMd="5">
+                                        <IonCol size="12" sizeMd="4">
                                             <IonItem>
                                                 <IonLabel position="floating">Components</IonLabel>
                                                 <IonInput
@@ -474,7 +476,6 @@ const JobDispatch: React.FC = () => {
                                                 />
                                             </IonItem>
                                         </IonCol>
-
                                     </IonRow>
                                 </IonGrid>
                             ))}
