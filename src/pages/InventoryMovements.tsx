@@ -24,6 +24,7 @@ interface InventoryMovement {
   createdAt?: number;
   source?: 'STOCK' | 'CONSUME';
   jobNumber?: string | null;
+  performedByName?: string | null;
 }
 
 interface RouteParams {
@@ -120,6 +121,7 @@ const InventoryMovements: React.FC = () => {
                       <div>
                         <h3>{formatMovementDate(movement.createdAt)}</h3>
                         {movement.jobNumber && <p>Job: {movement.jobNumber}</p>}
+                        {movement.performedByName && <p>Performed By: {movement.performedByName}</p>}
                       </div>
 
                       <div className="movement-summary">
