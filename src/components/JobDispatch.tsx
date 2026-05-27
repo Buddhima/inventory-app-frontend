@@ -47,6 +47,12 @@ export interface FileGenerationResponse {
 interface DispatchLine {
     batchNumber: string;
     quantity: number;
+    deliveryQty: number;
+    batch: string;
+    batchQty: number;
+    ssccQty: number;
+    components: string;
+    componentsQty: number;
 }
 
 const JobDispatch: React.FC = () => {
@@ -56,11 +62,19 @@ const JobDispatch: React.FC = () => {
     const [error, setError] = useState('');
 
     const [purchasingDoc, setPurchasingDoc] = useState<string>("");
+    const [plant, setPlant] = useState<string>("");
     const [poItem, setPoItem] = useState<string>("");
+    const [material, setMaterial] = useState<string>("");
     const [supplier, setSupplier] = useState<string>("");
     const [deliveryQtyUnit, setDeliveryQtyUnit] = useState<string>("");
+    const [deliveryNote, setDeliveryNote] = useState<string>("");
     const [deliveryDate, setDeliveryDate] = useState<string>("");
     const [shippingDate, setShippingDate] = useState<string>("");
+    const [storageLocation, setStorageLocation] = useState<string>("");
+    const [manufacturingDate, setManufacturingDate] = useState<string>("");
+    const [packId, setPackId] = useState<string>("");
+    const [qtyUnit, setQtyUnit] = useState<string>("");
+    const [batchComponents, setBatchComponents] = useState<string>("");
     const [numberOfLines, setNumberOfLines] = useState<number>(0);
     const [dispatchLines, setDispatchLines] = useState<DispatchLine[]>([]);
     const [asnLink, setAsnLink] = useState<string>("");
@@ -93,6 +107,12 @@ const JobDispatch: React.FC = () => {
             Array.from({ length: numberOfLines }, (_, index) => ({
                 batchNumber: prev[index]?.batchNumber ?? "",
                 quantity: prev[index]?.quantity ?? 0,
+                deliveryQty: prev[index]?.deliveryQty ?? 0,
+                batch: prev[index]?.batch ?? "",
+                batchQty: prev[index]?.batchQty ?? 0,
+                ssccQty: prev[index]?.ssccQty ?? 0,
+                components: prev[index]?.components ?? "",
+                componentsQty: prev[index]?.componentsQty ?? 0,
             }))
         );
     };
@@ -119,12 +139,19 @@ const JobDispatch: React.FC = () => {
         }
 
         if (
-            !purchasingDoc.trim() ||
+            !plant.trim() ||
             !poItem.trim() ||
+            !material.trim() ||
             !supplier.trim() ||
             !deliveryQtyUnit.trim() ||
+            !deliveryNote.trim() ||
             !deliveryDate ||
             !shippingDate ||
+            !storageLocation.trim() ||
+            !manufacturingDate ||
+            !packId.trim() ||
+            !qtyUnit.trim() ||
+            !batchComponents.trim() ||
             numberOfLines < 1
         ) {
             setError('Please fill all ASN details');
@@ -137,11 +164,19 @@ const JobDispatch: React.FC = () => {
         }
 
         const hasInvalidLine = dispatchLines.some(
-            (line) => !line.batchNumber.trim() || Number(line.quantity) <= 0
+            (line) =>
+                !line.batchNumber.trim() ||
+                Number(line.quantity) <= 0 ||
+                Number(line.deliveryQty) <= 0 ||
+                !line.batch.trim() ||
+                Number(line.batchQty) <= 0 ||
+                Number(line.ssccQty) <= 0 ||
+                !line.components.trim() ||
+                Number(line.componentsQty) <= 0
         );
 
         if (hasInvalidLine) {
-            setError('Please enter batch number and quantity for each line');
+            setError('Please complete all dispatch line details');
             return;
         }
 
@@ -151,15 +186,29 @@ const JobDispatch: React.FC = () => {
             const res = await api.post('/generate-asn', {
                 jobNumber: selectedJob.jobNumber,
                 purchasingDoc,
+                plant,
                 poItem,
+                material,
                 supplier,
                 deliveryQtyUnit,
+                deliveryNote,
                 deliveryDate,
                 shippingDate,
+                storageLocation,
+                manufacturingDate,
+                packId,
+                qtyUnit,
+                batchComponents,
                 numberOfLines,
                 lines: dispatchLines.map((line) => ({
                     batchNumber: line.batchNumber,
                     quantity: Number(line.quantity),
+                    deliveryQty: Number(line.deliveryQty),
+                    batch: line.batch,
+                    batchQty: Number(line.batchQty),
+                    ssccQty: Number(line.ssccQty),
+                    components: line.components,
+                    componentsQty: Number(line.componentsQty),
                 })),
             });
 
@@ -256,6 +305,14 @@ const JobDispatch: React.FC = () => {
                             <IonInput
                                 value={purchasingDoc}
                                 onIonChange={(e) => setPurchasingDoc(e.detail.value ?? "")}
+                            />
+                        </IonItem>
+
+                        <IonItem>
+                            <IonLabel position="floating">Plant</IonLabel>
+                            <IonInput
+                                value={plant}
+                                onIonChange={(e) => setPlant(e.detail.value ?? "")}
                                 required
                             />
                         </IonItem>
@@ -265,6 +322,15 @@ const JobDispatch: React.FC = () => {
                             <IonInput
                                 value={poItem}
                                 onIonChange={(e) => setPoItem(e.detail.value ?? "")}
+                                required
+                            />
+                        </IonItem>
+
+                        <IonItem>
+                            <IonLabel position="floating">Material</IonLabel>
+                            <IonInput
+                                value={material}
+                                onIonChange={(e) => setMaterial(e.detail.value ?? "")}
                                 required
                             />
                         </IonItem>
@@ -288,6 +354,15 @@ const JobDispatch: React.FC = () => {
                         </IonItem>
 
                         <IonItem>
+                            <IonLabel position="floating">Delivery note</IonLabel>
+                            <IonInput
+                                value={deliveryNote}
+                                onIonChange={(e) => setDeliveryNote(e.detail.value ?? "")}
+                                required
+                            />
+                        </IonItem>
+
+                        <IonItem>
                             <IonLabel position="floating">Delivery date</IonLabel>
                             <IonInput
                                 type="date"
@@ -303,6 +378,52 @@ const JobDispatch: React.FC = () => {
                                 type="date"
                                 value={shippingDate}
                                 onIonChange={(e) => setShippingDate(e.detail.value ?? "")}
+                                required
+                            />
+                        </IonItem>
+
+                        <IonItem>
+                            <IonLabel position="floating">Storage location</IonLabel>
+                            <IonInput
+                                value={storageLocation}
+                                onIonChange={(e) => setStorageLocation(e.detail.value ?? "")}
+                                required
+                            />
+                        </IonItem>
+
+                        <IonItem>
+                            <IonLabel position="floating">Manufacturing date</IonLabel>
+                            <IonInput
+                                type="date"
+                                value={manufacturingDate}
+                                onIonChange={(e) => setManufacturingDate(e.detail.value ?? "")}
+                                required
+                            />
+                        </IonItem>
+
+                        <IonItem>
+                            <IonLabel position="floating">Pack ID</IonLabel>
+                            <IonInput
+                                value={packId}
+                                onIonChange={(e) => setPackId(e.detail.value ?? "")}
+                                required
+                            />
+                        </IonItem>
+
+                        <IonItem>
+                            <IonLabel position="floating">Qty unit</IonLabel>
+                            <IonInput
+                                value={qtyUnit}
+                                onIonChange={(e) => setQtyUnit(e.detail.value ?? "")}
+                                required
+                            />
+                        </IonItem>
+
+                        <IonItem>
+                            <IonLabel position="floating">Batch components</IonLabel>
+                            <IonInput
+                                value={batchComponents}
+                                onIonChange={(e) => setBatchComponents(e.detail.value ?? "")}
                                 required
                             />
                         </IonItem>
@@ -344,7 +465,7 @@ const JobDispatch: React.FC = () => {
                                             <IonLabel>Line {index + 1}</IonLabel>
                                         </IonCol>
 
-                                        <IonCol size="12" sizeMd="5">
+                                        <IonCol size="12" sizeMd="4">
                                             <IonItem>
                                                 <IonLabel position="floating">Batch number</IonLabel>
                                                 <IonInput
@@ -357,7 +478,7 @@ const JobDispatch: React.FC = () => {
                                             </IonItem>
                                         </IonCol>
 
-                                        <IonCol size="12" sizeMd="5">
+                                        <IonCol size="12" sizeMd="4">
                                             <IonItem>
                                                 <IonLabel position="floating">Quantity</IonLabel>
                                                 <IonInput
@@ -366,6 +487,92 @@ const JobDispatch: React.FC = () => {
                                                     value={line.quantity || ""}
                                                     onIonChange={(e) =>
                                                         updateDispatchLine(index, "quantity", Number(e.detail.value ?? 0))
+                                                    }
+                                                    required
+                                                />
+                                            </IonItem>
+                                        </IonCol>
+
+                                        <IonCol size="12" sizeMd="4">
+                                            <IonItem>
+                                                <IonLabel position="floating">Delivery qty</IonLabel>
+                                                <IonInput
+                                                    type="number"
+                                                    min={0}
+                                                    value={line.deliveryQty || ""}
+                                                    onIonChange={(e) =>
+                                                        updateDispatchLine(index, "deliveryQty", Number(e.detail.value ?? 0))
+                                                    }
+                                                    required
+                                                />
+                                            </IonItem>
+                                        </IonCol>
+
+                                        <IonCol size="12" sizeMd="4">
+                                            <IonItem>
+                                                <IonLabel position="floating">Batch</IonLabel>
+                                                <IonInput
+                                                    value={line.batch}
+                                                    onIonChange={(e) =>
+                                                        updateDispatchLine(index, "batch", e.detail.value ?? "")
+                                                    }
+                                                    required
+                                                />
+                                            </IonItem>
+                                        </IonCol>
+
+                                        <IonCol size="12" sizeMd="4">
+                                            <IonItem>
+                                                <IonLabel position="floating">Batch qty</IonLabel>
+                                                <IonInput
+                                                    type="number"
+                                                    min={0}
+                                                    value={line.batchQty || ""}
+                                                    onIonChange={(e) =>
+                                                        updateDispatchLine(index, "batchQty", Number(e.detail.value ?? 0))
+                                                    }
+                                                    required
+                                                />
+                                            </IonItem>
+                                        </IonCol>
+
+                                        <IonCol size="12" sizeMd="4">
+                                            <IonItem>
+                                                <IonLabel position="floating">SSCC qty</IonLabel>
+                                                <IonInput
+                                                    type="number"
+                                                    min={0}
+                                                    value={line.ssccQty || ""}
+                                                    onIonChange={(e) =>
+                                                        updateDispatchLine(index, "ssccQty", Number(e.detail.value ?? 0))
+                                                    }
+                                                    required
+                                                />
+                                            </IonItem>
+                                        </IonCol>
+
+                                        <IonCol size="12" sizeMd="4">
+                                            <IonItem>
+                                                <IonLabel position="floating">Components</IonLabel>
+                                                <IonInput
+                                                    value={line.components}
+                                                    onIonChange={(e) =>
+                                                        updateDispatchLine(index, "components", e.detail.value ?? "")
+                                                    }
+                                                    required
+                                                />
+                                            </IonItem>
+                                        </IonCol>
+
+                                        <IonCol size="12" sizeMd="4">
+                                            <IonItem>
+                                                <IonLabel position="floating">Components qty</IonLabel>
+                                                <IonInput
+                                                    type="number"
+                                                    min={0}
+                                                    value={line.componentsQty || ""}
+                                                    onIonChange={(e) =>
+                                                        updateDispatchLine(index, "componentsQty", Number(e.detail.value ?? 0))
                                                     }
                                                     required
                                                 />
