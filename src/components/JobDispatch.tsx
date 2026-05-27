@@ -205,6 +205,7 @@ const JobDispatch: React.FC = () => {
     const [searchText, setSearchText] = useState('');
 
     const selectedJob = jobs.find(t => t.sk === selectedId);
+    const canGenerateASN = !!selectedId && !loading && numberOfLines > 0 && dispatchLines.length === numberOfLines;
 
     const filteredJobs = useMemo(() => {
         if (!searchText) return jobs;
@@ -404,6 +405,7 @@ const JobDispatch: React.FC = () => {
                                 onIonChange={(e) => {
                                     const value = Number(e.detail.value ?? 0);
                                     setNumberOfLines(value);
+                                    setDispatchLines([]);
                                 }}
                                 required
                             />
@@ -484,7 +486,7 @@ const JobDispatch: React.FC = () => {
             <IonButton
                 expand="block"
                 className="ion-margin-top"
-                disabled={!selectedId || loading}
+                disabled={!canGenerateASN}
                 onClick={generateASN}
             >
                 Generate ASN
