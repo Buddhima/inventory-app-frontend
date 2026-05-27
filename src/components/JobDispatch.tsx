@@ -17,6 +17,8 @@ import {
     IonGrid,
     IonRow,
     IonCol,
+    IonAccordion,
+    IonAccordionGroup,
 } from "@ionic/react";
 import { api } from '../api';
 
@@ -57,18 +59,18 @@ const JobDispatch: React.FC = () => {
     const [error, setError] = useState('');
 
     const [purchasingDoc, setPurchasingDoc] = useState<string>("");
-    const [plant, setPlant] = useState<string>("");
-    const [poItem, setPoItem] = useState<string>("");
-    const [supplier, setSupplier] = useState<string>("");
-    const [deliveryQtyUnit, setDeliveryQtyUnit] = useState<string>("");
-    const [deliveryNote, setDeliveryNote] = useState<string>("");
+    const [plant, setPlant] = useState<string>("FLKA");
+    const [poItem, setPoItem] = useState<string>("10");
+    const [supplier, setSupplier] = useState<string>("10058487");
+    const [deliveryQtyUnit, setDeliveryQtyUnit] = useState<string>("PC");
+    const [deliveryNote, setDeliveryNote] = useState<string>("production");
     const [deliveryDate, setDeliveryDate] = useState<string>("");
     const [shippingDate, setShippingDate] = useState<string>("");
-    const [storageLocation, setStorageLocation] = useState<string>("");
+    const [storageLocation, setStorageLocation] = useState<string>("SL01");
     const [manufacturingDate, setManufacturingDate] = useState<string>("");
-    const [packId, setPackId] = useState<string>("");
-    const [qtyUnit, setQtyUnit] = useState<string>("");
-    const [batchComponents, setBatchComponents] = useState<string>("");
+    const [packId, setPackId] = useState<string>("PAL_23");
+    const [qtyUnit, setQtyUnit] = useState<string>("PC");
+    const [batchComponents, setBatchComponents] = useState<string>("DUMMY");
     const [numberOfLines, setNumberOfLines] = useState<number>(0);
     const [dispatchLines, setDispatchLines] = useState<DispatchLine[]>([]);
     const [asnLink, setAsnLink] = useState<string>("");
@@ -284,50 +286,96 @@ const JobDispatch: React.FC = () => {
                             />
                         </IonItem>
 
-                        <IonItem>
-                            <IonLabel position="floating">Plant</IonLabel>
-                            <IonInput
-                                value={plant}
-                                onIonChange={(e) => setPlant(e.detail.value ?? "")}
-                                required
-                            />
-                        </IonItem>
+                        <IonAccordionGroup className="ion-margin-top">
+                            <IonAccordion value="asn-defaults">
+                                <IonItem slot="header">
+                                    <IonLabel>Default ASN values</IonLabel>
+                                </IonItem>
 
-                        <IonItem>
-                            <IonLabel position="floating">PO item</IonLabel>
-                            <IonInput
-                                value={poItem}
-                                onIonChange={(e) => setPoItem(e.detail.value ?? "")}
-                                required
-                            />
-                        </IonItem>
+                                <IonList slot="content">
+                                    <IonItem>
+                                        <IonLabel position="floating">Plant</IonLabel>
+                                        <IonInput
+                                            value={plant}
+                                            onIonChange={(e) => setPlant(e.detail.value ?? "")}
+                                            required
+                                        />
+                                    </IonItem>
 
-                        <IonItem>
-                            <IonLabel position="floating">Supplier</IonLabel>
-                            <IonInput
-                                value={supplier}
-                                onIonChange={(e) => setSupplier(e.detail.value ?? "")}
-                                required
-                            />
-                        </IonItem>
+                                    <IonItem>
+                                        <IonLabel position="floating">PO item</IonLabel>
+                                        <IonInput
+                                            value={poItem}
+                                            onIonChange={(e) => setPoItem(e.detail.value ?? "")}
+                                            required
+                                        />
+                                    </IonItem>
 
-                        <IonItem>
-                            <IonLabel position="floating">Delivery qty unit</IonLabel>
-                            <IonInput
-                                value={deliveryQtyUnit}
-                                onIonChange={(e) => setDeliveryQtyUnit(e.detail.value ?? "")}
-                                required
-                            />
-                        </IonItem>
+                                    <IonItem>
+                                        <IonLabel position="floating">Supplier</IonLabel>
+                                        <IonInput
+                                            value={supplier}
+                                            onIonChange={(e) => setSupplier(e.detail.value ?? "")}
+                                            required
+                                        />
+                                    </IonItem>
 
-                        <IonItem>
-                            <IonLabel position="floating">Delivery note</IonLabel>
-                            <IonInput
-                                value={deliveryNote}
-                                onIonChange={(e) => setDeliveryNote(e.detail.value ?? "")}
-                                required
-                            />
-                        </IonItem>
+                                    <IonItem>
+                                        <IonLabel position="floating">Delivery qty unit</IonLabel>
+                                        <IonInput
+                                            value={deliveryQtyUnit}
+                                            onIonChange={(e) => setDeliveryQtyUnit(e.detail.value ?? "")}
+                                            required
+                                        />
+                                    </IonItem>
+
+                                    <IonItem>
+                                        <IonLabel position="floating">Delivery note</IonLabel>
+                                        <IonInput
+                                            value={deliveryNote}
+                                            onIonChange={(e) => setDeliveryNote(e.detail.value ?? "")}
+                                            required
+                                        />
+                                    </IonItem>
+
+                                    <IonItem>
+                                        <IonLabel position="floating">Storage location</IonLabel>
+                                        <IonInput
+                                            value={storageLocation}
+                                            onIonChange={(e) => setStorageLocation(e.detail.value ?? "")}
+                                            required
+                                        />
+                                    </IonItem>
+
+                                    <IonItem>
+                                        <IonLabel position="floating">Pack ID</IonLabel>
+                                        <IonInput
+                                            value={packId}
+                                            onIonChange={(e) => setPackId(e.detail.value ?? "")}
+                                            required
+                                        />
+                                    </IonItem>
+
+                                    <IonItem>
+                                        <IonLabel position="floating">Qty unit</IonLabel>
+                                        <IonInput
+                                            value={qtyUnit}
+                                            onIonChange={(e) => setQtyUnit(e.detail.value ?? "")}
+                                            required
+                                        />
+                                    </IonItem>
+
+                                    <IonItem>
+                                        <IonLabel position="floating">Batch components</IonLabel>
+                                        <IonInput
+                                            value={batchComponents}
+                                            onIonChange={(e) => setBatchComponents(e.detail.value ?? "")}
+                                            required
+                                        />
+                                    </IonItem>
+                                </IonList>
+                            </IonAccordion>
+                        </IonAccordionGroup>
 
                         <IonItem>
                             <IonLabel position="floating">Delivery date</IonLabel>
@@ -350,47 +398,11 @@ const JobDispatch: React.FC = () => {
                         </IonItem>
 
                         <IonItem>
-                            <IonLabel position="floating">Storage location</IonLabel>
-                            <IonInput
-                                value={storageLocation}
-                                onIonChange={(e) => setStorageLocation(e.detail.value ?? "")}
-                                required
-                            />
-                        </IonItem>
-
-                        <IonItem>
                             <IonLabel position="floating">Manufacturing date</IonLabel>
                             <IonInput
                                 type="date"
                                 value={manufacturingDate}
                                 onIonChange={(e) => setManufacturingDate(e.detail.value ?? "")}
-                                required
-                            />
-                        </IonItem>
-
-                        <IonItem>
-                            <IonLabel position="floating">Pack ID</IonLabel>
-                            <IonInput
-                                value={packId}
-                                onIonChange={(e) => setPackId(e.detail.value ?? "")}
-                                required
-                            />
-                        </IonItem>
-
-                        <IonItem>
-                            <IonLabel position="floating">Qty unit</IonLabel>
-                            <IonInput
-                                value={qtyUnit}
-                                onIonChange={(e) => setQtyUnit(e.detail.value ?? "")}
-                                required
-                            />
-                        </IonItem>
-
-                        <IonItem>
-                            <IonLabel position="floating">Batch components</IonLabel>
-                            <IonInput
-                                value={batchComponents}
-                                onIonChange={(e) => setBatchComponents(e.detail.value ?? "")}
                                 required
                             />
                         </IonItem>
