@@ -47,12 +47,7 @@ export interface FileGenerationResponse {
 interface DispatchLine {
     batchNumber: string;
     quantity: number;
-    deliveryQty: number;
-    batch: string;
-    batchQty: number;
-    ssccQty: number;
     components: string;
-    componentsQty: number;
 }
 
 const JobDispatch: React.FC = () => {
@@ -64,7 +59,6 @@ const JobDispatch: React.FC = () => {
     const [purchasingDoc, setPurchasingDoc] = useState<string>("");
     const [plant, setPlant] = useState<string>("");
     const [poItem, setPoItem] = useState<string>("");
-    const [material, setMaterial] = useState<string>("");
     const [supplier, setSupplier] = useState<string>("");
     const [deliveryQtyUnit, setDeliveryQtyUnit] = useState<string>("");
     const [deliveryNote, setDeliveryNote] = useState<string>("");
@@ -107,12 +101,7 @@ const JobDispatch: React.FC = () => {
             Array.from({ length: numberOfLines }, (_, index) => ({
                 batchNumber: prev[index]?.batchNumber ?? "",
                 quantity: prev[index]?.quantity ?? 0,
-                deliveryQty: prev[index]?.deliveryQty ?? 0,
-                batch: prev[index]?.batch ?? "",
-                batchQty: prev[index]?.batchQty ?? 0,
-                ssccQty: prev[index]?.ssccQty ?? 0,
                 components: prev[index]?.components ?? "",
-                componentsQty: prev[index]?.componentsQty ?? 0,
             }))
         );
     };
@@ -141,7 +130,6 @@ const JobDispatch: React.FC = () => {
         if (
             !plant.trim() ||
             !poItem.trim() ||
-            !material.trim() ||
             !supplier.trim() ||
             !deliveryQtyUnit.trim() ||
             !deliveryNote.trim() ||
@@ -167,12 +155,7 @@ const JobDispatch: React.FC = () => {
             (line) =>
                 !line.batchNumber.trim() ||
                 Number(line.quantity) <= 0 ||
-                Number(line.deliveryQty) <= 0 ||
-                !line.batch.trim() ||
-                Number(line.batchQty) <= 0 ||
-                Number(line.ssccQty) <= 0 ||
-                !line.components.trim() ||
-                Number(line.componentsQty) <= 0
+                !line.components.trim()
         );
 
         if (hasInvalidLine) {
@@ -188,7 +171,6 @@ const JobDispatch: React.FC = () => {
                 purchasingDoc,
                 plant,
                 poItem,
-                material,
                 supplier,
                 deliveryQtyUnit,
                 deliveryNote,
@@ -199,16 +181,10 @@ const JobDispatch: React.FC = () => {
                 packId,
                 qtyUnit,
                 batchComponents,
-                numberOfLines,
                 lines: dispatchLines.map((line) => ({
                     batchNumber: line.batchNumber,
                     quantity: Number(line.quantity),
-                    deliveryQty: Number(line.deliveryQty),
-                    batch: line.batch,
-                    batchQty: Number(line.batchQty),
-                    ssccQty: Number(line.ssccQty),
                     components: line.components,
-                    componentsQty: Number(line.componentsQty),
                 })),
             });
 
@@ -322,15 +298,6 @@ const JobDispatch: React.FC = () => {
                             <IonInput
                                 value={poItem}
                                 onIonChange={(e) => setPoItem(e.detail.value ?? "")}
-                                required
-                            />
-                        </IonItem>
-
-                        <IonItem>
-                            <IonLabel position="floating">Material</IonLabel>
-                            <IonInput
-                                value={material}
-                                onIonChange={(e) => setMaterial(e.detail.value ?? "")}
                                 required
                             />
                         </IonItem>
@@ -465,7 +432,7 @@ const JobDispatch: React.FC = () => {
                                             <IonLabel>Line {index + 1}</IonLabel>
                                         </IonCol>
 
-                                        <IonCol size="12" sizeMd="4">
+                                        <IonCol size="12" sizeMd="5">
                                             <IonItem>
                                                 <IonLabel position="floating">Batch number</IonLabel>
                                                 <IonInput
@@ -478,7 +445,7 @@ const JobDispatch: React.FC = () => {
                                             </IonItem>
                                         </IonCol>
 
-                                        <IonCol size="12" sizeMd="4">
+                                        <IonCol size="12" sizeMd="5">
                                             <IonItem>
                                                 <IonLabel position="floating">Quantity</IonLabel>
                                                 <IonInput
@@ -493,65 +460,7 @@ const JobDispatch: React.FC = () => {
                                             </IonItem>
                                         </IonCol>
 
-                                        <IonCol size="12" sizeMd="4">
-                                            <IonItem>
-                                                <IonLabel position="floating">Delivery qty</IonLabel>
-                                                <IonInput
-                                                    type="number"
-                                                    min={0}
-                                                    value={line.deliveryQty || ""}
-                                                    onIonChange={(e) =>
-                                                        updateDispatchLine(index, "deliveryQty", Number(e.detail.value ?? 0))
-                                                    }
-                                                    required
-                                                />
-                                            </IonItem>
-                                        </IonCol>
-
-                                        <IonCol size="12" sizeMd="4">
-                                            <IonItem>
-                                                <IonLabel position="floating">Batch</IonLabel>
-                                                <IonInput
-                                                    value={line.batch}
-                                                    onIonChange={(e) =>
-                                                        updateDispatchLine(index, "batch", e.detail.value ?? "")
-                                                    }
-                                                    required
-                                                />
-                                            </IonItem>
-                                        </IonCol>
-
-                                        <IonCol size="12" sizeMd="4">
-                                            <IonItem>
-                                                <IonLabel position="floating">Batch qty</IonLabel>
-                                                <IonInput
-                                                    type="number"
-                                                    min={0}
-                                                    value={line.batchQty || ""}
-                                                    onIonChange={(e) =>
-                                                        updateDispatchLine(index, "batchQty", Number(e.detail.value ?? 0))
-                                                    }
-                                                    required
-                                                />
-                                            </IonItem>
-                                        </IonCol>
-
-                                        <IonCol size="12" sizeMd="4">
-                                            <IonItem>
-                                                <IonLabel position="floating">SSCC qty</IonLabel>
-                                                <IonInput
-                                                    type="number"
-                                                    min={0}
-                                                    value={line.ssccQty || ""}
-                                                    onIonChange={(e) =>
-                                                        updateDispatchLine(index, "ssccQty", Number(e.detail.value ?? 0))
-                                                    }
-                                                    required
-                                                />
-                                            </IonItem>
-                                        </IonCol>
-
-                                        <IonCol size="12" sizeMd="4">
+                                        <IonCol size="12" sizeMd="5">
                                             <IonItem>
                                                 <IonLabel position="floating">Components</IonLabel>
                                                 <IonInput
@@ -564,20 +473,6 @@ const JobDispatch: React.FC = () => {
                                             </IonItem>
                                         </IonCol>
 
-                                        <IonCol size="12" sizeMd="4">
-                                            <IonItem>
-                                                <IonLabel position="floating">Components qty</IonLabel>
-                                                <IonInput
-                                                    type="number"
-                                                    min={0}
-                                                    value={line.componentsQty || ""}
-                                                    onIonChange={(e) =>
-                                                        updateDispatchLine(index, "componentsQty", Number(e.detail.value ?? 0))
-                                                    }
-                                                    required
-                                                />
-                                            </IonItem>
-                                        </IonCol>
                                     </IonRow>
                                 </IonGrid>
                             ))}
