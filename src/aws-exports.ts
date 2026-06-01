@@ -1,16 +1,18 @@
+import { appConfig } from './config';
+
 const awsExports = {
   Auth: {
     Cognito: {
-      region: 'us-east-1',
-      userPoolId: 'us-east-1_OZ40xwtxd',
-      userPoolClientId: '3lf6emv0c419un37unamam1mgu',
+      region: appConfig.awsRegion,
+      userPoolId: appConfig.cognitoUserPoolId,
+      userPoolClientId: appConfig.cognitoUserPoolClientId,
       loginWith: {
         oauth: {
-          domain: 'ionic-react-auth.auth.us-east-1.amazoncognito.com',
+          domain: appConfig.cognitoDomain,
           scopes: ['openid', 'email', 'profile'],
-          redirectSignIn: ['http://localhost:8100/auth/callback'],
-          redirectSignOut: ['http://localhost:8100/'],
-          responseType: 'code' as const, // ✅ IMPORTANT
+          redirectSignIn: [appConfig.redirectSignIn],
+          redirectSignOut: [appConfig.redirectSignOut],
+          responseType: 'code' as const,
         },
       },
     },
