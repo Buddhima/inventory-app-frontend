@@ -67,10 +67,10 @@ const JobTemplateUploadForm = ({ onItemAdded }: JobTemplateUploadFormProps) => {
             }
 
             onItemAdded?.();
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error("Upload failed:", error);
             setUploading(false);
-            setError(error.message || "Upload failed");
+            setError(error instanceof Error ? error.message : "Upload failed");
         }
     };
 

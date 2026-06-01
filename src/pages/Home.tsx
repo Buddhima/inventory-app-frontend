@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   IonPage,
   IonContent
@@ -8,7 +8,7 @@ import { AppHeader } from '../components/AppHeader';
 import ItemList from '../components/ItemList';
 
 const Home = () => {
-  const [reload, setReload] = useState(0);
+  const reload = 0;
 
   return (
     <IonPage>

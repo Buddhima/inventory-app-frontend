@@ -29,12 +29,6 @@ export interface TemplateSummary {
     sk?: string;
 }
 
-export interface Template {
-    id: string;
-    data: unknown; // adjust if you know the structure
-}
-
-
 interface Item {
     componentCode: string;
     componentDescription?: string;
@@ -57,7 +51,6 @@ const JobTemplate: React.FC = () => {
     const [templates, setTemplates] = useState<TemplateSummary[]>([]);
     const [selectedId, setSelectedId] = useState<string>();
     const [loading, setLoading] = useState(false);
-    const [template, setTemplate] = useState<Template | null>(null);
     const [error, setError] = useState('');
 
     const [id, setId] = useState<string>("");
@@ -98,10 +91,8 @@ const JobTemplate: React.FC = () => {
                 params: { sk }
             });
 
-            const data = res.data as Template;
-            setTemplate(data);
-            console.log('Retrieved template:', data);
             const jobData = res.data as JobPayload
+            console.log('Retrieved template:', jobData);
             fillContent(jobData);
         } catch {
             setError('Failed to retrieve template');
