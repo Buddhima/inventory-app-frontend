@@ -1,8 +1,9 @@
 import axios from "axios";
 import { fetchAuthSession } from "aws-amplify/auth";
+import { appConfig } from "./config";
 
 export const api = axios.create({
-  baseURL: "https://by5brcdq48.execute-api.us-east-1.amazonaws.com/prod",
+  baseURL: appConfig.apiBaseUrl,
 });
 
 api.interceptors.request.use(async (config) => {
