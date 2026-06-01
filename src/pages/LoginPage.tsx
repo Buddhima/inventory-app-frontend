@@ -3,9 +3,7 @@ import React from 'react';
 import { Amplify } from 'aws-amplify';
 import { Authenticator } from '@aws-amplify/ui-react';
 import { signUp, SignUpInput } from 'aws-amplify/auth';
-import { fetchAuthSession } from '@aws-amplify/auth';
 import { useIonRouter } from '@ionic/react';
-import { useEffect, useState } from 'react';
 
 import '@aws-amplify/ui-react/styles.css';
 

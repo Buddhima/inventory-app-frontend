@@ -9,7 +9,7 @@ import JobDispatch from '../components/JobDispatch';
 import JobDispatchList from '../components/JobDispatchList';
 
 const Dispatch = () => {
-  const [reload, setReload] = useState(0);
+  const reload = 0;
   const [selectedSegment, setSelectedSegment] = useState<string | number>("segment1");
 
   return (

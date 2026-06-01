@@ -1,9 +1,13 @@
 import React from 'react';
-import { Route, Redirect } from 'react-router-dom';
+import { Route, Redirect, RouteProps } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { isAuthenticated } from './auth';
 
-export const ProtectedRoute = ({ component: Component, ...rest }: any) => {
+interface ProtectedRouteProps extends RouteProps {
+  children: React.ReactNode;
+}
+
+export const ProtectedRoute = ({ children, ...rest }: ProtectedRouteProps) => {
   const [loading, setLoading] = useState(true);
   const [authed, setAuthed] = useState(false);
 
@@ -19,8 +23,8 @@ export const ProtectedRoute = ({ component: Component, ...rest }: any) => {
   return (
     <Route
       {...rest}
-      render={(props) =>
-        authed ? <Component {...props} /> : <Redirect to="/login" />
+      render={() =>
+        authed ? <>{children}</> : <Redirect to="/login" />
       }
     />
   );

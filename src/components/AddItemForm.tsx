@@ -2,12 +2,10 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import {
     IonItem,
-    IonLabel,
     IonInput,
     IonButton,
     IonToast
 } from '@ionic/react';
-import axios from 'axios';
 import { api } from '../api';
 
 interface AddItemFormProps {
