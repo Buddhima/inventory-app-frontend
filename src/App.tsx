@@ -1,5 +1,5 @@
-import React from 'react';
-import { Route } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Redirect, Route } from 'react-router-dom';
 import { Authenticator } from '@aws-amplify/ui-react';
 import {
   IonApp,
@@ -43,12 +43,32 @@ import Dispatch from './pages/Dispatch';
 import InventoryMovements from './pages/InventoryMovements';
 
 import { ProtectedRoute } from './ProtectedRoute';
+import { isInGroup } from './auth';
 
 setupIonicReact();
 
-const App: React.FC = () => (
-  <Authenticator>
+const ADMIN_GROUP = 'admin';
 
+const AppContent: React.FC = () => {
+  const [adminLoading, setAdminLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    let mounted = true;
+
+    isInGroup(ADMIN_GROUP).then((result) => {
+      if (mounted) {
+        setIsAdmin(result);
+        setAdminLoading(false);
+      }
+    });
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  return (
     <IonApp>
       <IonReactRouter>
         <IonTabs>
@@ -70,7 +90,7 @@ const App: React.FC = () => (
               <JobTemplate />
             </ProtectedRoute>
             <ProtectedRoute path="/upload-template" exact >
-              <JobTemplateUpload />
+              {adminLoading ? null : isAdmin ? <JobTemplateUpload /> : <Redirect to="/home" />}
             </ProtectedRoute>
             <ProtectedRoute path="/stock" exact >
               <Stock />
@@ -92,10 +112,12 @@ const App: React.FC = () => (
               <IonIcon aria-hidden="true" icon={layersOutline} />
               <IonLabel>JobTemplate</IonLabel>
             </IonTabButton>
-            <IonTabButton tab="upload-template" href="/upload-template">
-              <IonIcon aria-hidden="true" icon={cloudUploadOutline} />
-              <IonLabel>JobTemplateUpload</IonLabel>
-            </IonTabButton>
+            {isAdmin && (
+              <IonTabButton tab="upload-template" href="/upload-template">
+                <IonIcon aria-hidden="true" icon={cloudUploadOutline} />
+                <IonLabel>JobTemplateUpload</IonLabel>
+              </IonTabButton>
+            )}
             <IonTabButton tab="stock" href="/stock">
               <IonIcon aria-hidden="true" icon={cubeOutline} />
               <IonLabel>Stock/Consume</IonLabel>
@@ -112,6 +134,13 @@ const App: React.FC = () => (
         </IonTabs>
       </IonReactRouter>
     </IonApp>
+  );
+};
+
+const App: React.FC = () => (
+  <Authenticator>
+
+    <AppContent />
 
   </Authenticator>
 );
