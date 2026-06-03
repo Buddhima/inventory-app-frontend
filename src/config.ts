@@ -16,4 +16,5 @@ export const appConfig = {
   cognitoDomain: requireEnv('REACT_APP_COGNITO_DOMAIN'),
   redirectSignIn: requireEnv('REACT_APP_REDIRECT_SIGN_IN'),
   redirectSignOut: requireEnv('REACT_APP_REDIRECT_SIGN_OUT'),
+  workflowmaxOrganizationId: requireEnv('REACT_APP_WORKFLOWMAX_ORGANIZATION_ID'),
 };

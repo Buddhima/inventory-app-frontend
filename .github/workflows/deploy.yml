@@ -38,6 +38,7 @@ jobs:
           REACT_APP_COGNITO_DOMAIN: ${{ vars.REACT_APP_COGNITO_DOMAIN }}
           REACT_APP_REDIRECT_SIGN_IN: ${{ vars.REACT_APP_REDIRECT_SIGN_IN }}
           REACT_APP_REDIRECT_SIGN_OUT: ${{ vars.REACT_APP_REDIRECT_SIGN_OUT }}
+          REACT_APP_WORKFLOWMAX_ORGANIZATION_ID: ${{ vars.REACT_APP_WORKFLOWMAX_ORGANIZATION_ID }}
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -79,6 +80,7 @@ jobs:
           REACT_APP_COGNITO_DOMAIN: ${{ vars.REACT_APP_COGNITO_DOMAIN }}
           REACT_APP_REDIRECT_SIGN_IN: ${{ vars.REACT_APP_REDIRECT_SIGN_IN }}
           REACT_APP_REDIRECT_SIGN_OUT: ${{ vars.REACT_APP_REDIRECT_SIGN_OUT }}
+          REACT_APP_WORKFLOWMAX_ORGANIZATION_ID: ${{ vars.REACT_APP_WORKFLOWMAX_ORGANIZATION_ID }}
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
